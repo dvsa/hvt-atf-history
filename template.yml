@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  SQSHistoryFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/handler/
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Events:
+        MySQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt MySqsQueue.Arn
+            BatchSize: 10
+  MySqsQueue:
+      Type: AWS::SQS::Queue
