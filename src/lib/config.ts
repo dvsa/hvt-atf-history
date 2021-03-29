@@ -1,7 +1,6 @@
 interface Config {
   awsRegion: string,
   nodeEnv: string,
-  sqsAvailabilityHistoryQueueUrl: string,
   dynamoUrl: string,
   tableName: string,
 }
@@ -10,7 +9,6 @@ export const getConfig = (): Config => {
   [
     'AWS_DEFAULT_REGION',
     'NODE_ENV',
-    'SQS_AVAILABILITY_HISTORY_QUEUE_URL',
     'DYNAMO_URL',
     'TABLE_NAME',
   ].forEach((envVar) => {
@@ -21,7 +19,6 @@ export const getConfig = (): Config => {
   return {
     awsRegion: process.env.AWS_DEFAULT_REGION,
     nodeEnv: process.env.NODE_ENV,
-    sqsAvailabilityHistoryQueueUrl: process.env.SQS_AVAILABILITY_HISTORY_QUEUE_URL,
     dynamoUrl: process.env.DYNAMO_URL,
     tableName: process.env.TABLE_NAME,
   };
