@@ -7,7 +7,7 @@ interface Config {
 
 export const getConfig = (): Config => {
   [
-    'AWS_DEFAULT_REGION',
+    'REGION',
     'NODE_ENV',
     'DYNAMO_URL',
     'TABLE_NAME',
@@ -17,7 +17,7 @@ export const getConfig = (): Config => {
     }
   });
   return {
-    awsRegion: process.env.AWS_DEFAULT_REGION,
+    awsRegion: process.env.REGION,
     nodeEnv: process.env.NODE_ENV,
     dynamoUrl: process.env.DYNAMO_URL,
     tableName: process.env.TABLE_NAME,

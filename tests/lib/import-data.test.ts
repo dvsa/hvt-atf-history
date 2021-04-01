@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { parsePayload } from '../src/util/import-data';
+import { parsePayload } from '../../src/lib/import-data';
 
 const mockHistoryEventId = '7db12eed-0c3f-4d27-8221-5699f4e3ea22';
 

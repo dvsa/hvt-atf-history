@@ -2,7 +2,7 @@ import 'dotenv/config';
 import type { Context, SQSEvent } from 'aws-lambda';
 import { createLogger, Logger } from '../util/logger';
 import * as dynamodb from '../service/dynamodb.service';
-import { parsePayload } from '../util/import-data';
+import { parsePayload, HistoryData } from '../lib/import-data';
 
 export const handler = async (event: SQSEvent, context: Context): Promise<void> => {
   const logger: Logger = createLogger(null, context);
@@ -10,28 +10,28 @@ export const handler = async (event: SQSEvent, context: Context): Promise<void> 
 
   const promises = event.Records.map((record) => {
     logger.debug(`Processing record: ${JSON.stringify(record.attributes)}`);
-    let item: Record<string, unknown>;
+    let item: HistoryData;
 
     try {
       item = parsePayload(record.body);
     } catch (err) {
-      return { result: 'failure' };
+      return { id: 'unknown', result: 'failure', message: 'failed to parse input data' };
     }
 
     return dynamodb.create(item)
-      .then(() => ({ id: item.id, result: 'success' }))
-      .catch(() => ({ id: item.id, result: 'failure' }));
+      .then(() => ({ id: item.id, result: 'success', message: '' }))
+      .catch((err: string) => ({ id: item.id, result: 'failure', message: err }));
   });
 
   const results = await Promise.all(promises);
 
   const successful = results.filter((job) => job.result === 'success');
-  const failed = results.filter((job) => job.result === 'failure');
+  const failed = results.filter((job) => job.result === 'failure').map(({ id, message }) => `${id} - ${message}`);
 
   if (failed.length > 0) {
-    logger.warn(`Queue item failed: Could not update the following items: ${failed.join(', ')}`);
+    logger.error(`Queue item failed: Could not update the following items: ${failed.join(', ')}`);
   }
 
-  logger.info(`History queue done. Total items processed: ${promises.length}, \
- successful: ${successful.length}, failed: ${failed.length}.`);
+  logger.info(`History queue finished processing. Total items processed: ${promises.length}, \
+successful: ${successful.length}, failed: ${failed.length}.`);
 };
