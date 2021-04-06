@@ -1,9 +1,8 @@
 export function getValidRecord() : Record<string, unknown> {
   return {
-    messageId: '4f80239a-03c9-4fce-d68a-104001cbc5cb',
+    messageId: validMessageId,
     receiptHandle: 'gvjxhsgayqxjneypkfnbfyvnvoeajirwkwlgmoioigyqijuqaembinhjsrkpaxvyhp',
     mD5OfBody: 'fb4823f6e5532530878d696331b20f3c',
-    // eslint-disable-next-line max-len
     body: getEventRecordItem(),
     attributes: {
       SenderId: 'AIDAIT2UOQQY3AUEKVGXU',
@@ -13,6 +12,8 @@ export function getValidRecord() : Record<string, unknown> {
     },
   };
 }
+
+export const validMessageId = '4f80239a-03c9-4fce-d68a-104001cbc5cb';
 
 export function getEventRecordItem(mockHistoryEventId = '123-123-123') :string {
   return JSON.stringify({

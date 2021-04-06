@@ -1,9 +1,9 @@
 import { HistoryData } from '../../src/lib/import-data';
 
-export function getExpectedEventItem(id = '456-456-456'): HistoryData {
+export function getExpectedEventItem(id = '456-456-456', atfId = '7db12eed-0c3f-4d27-8221-5699f4e3ea22'): HistoryData {
   const item = {
     id,
-    atfId: '7db12eed-0c3f-4d27-8221-5699f4e3ea22',
+    atfId,
     name: 'Derby Cars Ltd.',
     email: 'hello@email.com',
     availability: {

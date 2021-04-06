@@ -5,7 +5,7 @@ import * as dynamodb from '../service/dynamodb.service';
 import { parsePayload, HistoryData } from '../lib/import-data';
 
 export const handler = async (event: SQSEvent, context: Context): Promise<void> => {
-  const logger: Logger = createLogger(null, context);
+  const logger: Logger = createLogger(context);
   logger.info('History SQS lambda triggered.');
 
   const promises = event.Records.map((record) => {
@@ -15,12 +15,12 @@ export const handler = async (event: SQSEvent, context: Context): Promise<void> 
     try {
       item = parsePayload(record.body);
     } catch (err) {
-      return { id: 'unknown', result: 'failure', message: 'failed to parse input data' };
+      return { id: 'unknown', result: 'failure', message: `failed to parse input data. MessageId: ${record.messageId}` };
     }
 
     return dynamodb.create(item)
       .then(() => ({ id: item.id, result: 'success', message: '' }))
-      .catch((err: string) => ({ id: item.id, result: 'failure', message: err }));
+      .catch((err: string) => ({ id: item.atfId, result: 'failure', message: err }));
   });
 
   const results = await Promise.all(promises);

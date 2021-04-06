@@ -3,13 +3,16 @@ import { PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { handler } from '../../src/handler';
 import * as importData from '../../src/lib/import-data';
 import * as logger from '../../src/util/logger';
-import { getValidRecord } from '../mocks/validRecord';
+import * as mocks from '../mocks/validRecord';
 import { getExpectedEventItem } from '../mocks/validParsedRecord';
 import * as dynamodb from '../../src/service/dynamodb.service';
 
 describe('Availability history lambda index tests', () => {
   let eventMock: SQSEvent;
   let contextMock: Context;
+  const loggerErrorMessage = 'Queue item failed: Could not update the following items:';
+  const loggerProcessingMessage = (total: number, successful: number, failed: number) :string => `History queue finished processing. Total items processed: ${total}, successful: ${successful}, failed: ${failed}.`;
+
   const loggerInfoSpy = jest.fn();
   const loggerErrorSpy = jest.fn();
   const validRecord = {
@@ -46,26 +49,45 @@ describe('Availability history lambda index tests', () => {
     jest.spyOn(dynamodb, 'create').mockReturnValue(Promise.resolve(<PutItemOutput>{ id: '456-456-456' }));
 
     eventMock = <SQSEvent> <unknown>{
-      Records: [getValidRecord()],
+      Records: [mocks.getValidRecord()],
     };
     await handler(eventMock, contextMock);
 
     expect(loggerInfoSpy).toHaveBeenCalledTimes(2);
-    expect(loggerInfoSpy).nthCalledWith(2, 'History queue finished processing. Total items processed: 1, successful: 1, failed: 0.');
+    expect(loggerInfoSpy).nthCalledWith(2, loggerProcessingMessage(1, 1, 0));
   });
 
   test('should log out error if problem parsing input data', async () => {
     jest.spyOn(importData, 'parsePayload').mockImplementation(() => { throw new Error('Unable to parse request body. Unexpected token at JSON[0]'); });
 
     eventMock = <SQSEvent> <unknown>{
-      Records: [getValidRecord()],
+      Records: [mocks.getValidRecord()],
     };
     await handler(eventMock, contextMock);
 
     expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
-    expect(loggerErrorSpy).nthCalledWith(1, 'Queue item failed: Could not update the following items: unknown - failed to parse input data');
+    expect(loggerErrorSpy).nthCalledWith(1, `${loggerErrorMessage} unknown - failed to parse input data. MessageId: ${mocks.validMessageId}`);
 
     expect(loggerInfoSpy).toHaveBeenCalledTimes(2);
-    expect(loggerInfoSpy).nthCalledWith(2, 'History queue finished processing. Total items processed: 1, successful: 0, failed: 1.');
+    expect(loggerInfoSpy).nthCalledWith(2, loggerProcessingMessage(1, 0, 1));
+  });
+
+  test('should log out error if problem posting item to database', async () => {
+    const atfId = '7db12eed-0c3f-4d27-8221-5699f4e3ea22';
+    const errorMessage = 'Unexpected error saving to the database';
+    jest.spyOn(importData, 'parsePayload').mockReturnValue(getExpectedEventItem('123-123-123', atfId));
+    jest.spyOn(dynamodb, 'create').mockReturnValue(Promise.reject(new Error(errorMessage)));
+
+    eventMock = <SQSEvent> <unknown>{
+      Records: [mocks.getValidRecord()],
+    };
+
+    await handler(eventMock, contextMock);
+
+    expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+    expect(loggerErrorSpy).nthCalledWith(1, `${loggerErrorMessage} ${atfId} - Error: ${errorMessage}`);
+
+    expect(loggerInfoSpy).toHaveBeenCalledTimes(2);
+    expect(loggerInfoSpy).nthCalledWith(2, loggerProcessingMessage(1, 0, 1));
   });
 });
