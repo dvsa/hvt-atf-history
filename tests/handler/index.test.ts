@@ -7,6 +7,15 @@ import * as mocks from '../mocks/validRecord';
 import { getExpectedEventItem } from '../mocks/validParsedRecord';
 import * as dynamodb from '../../src/service/dynamodb.service';
 
+jest.mock('../../src/lib/config', () => ({
+  getConfig: jest.fn().mockReturnValue({
+    awsRegion: 'region',
+    nodeEnv: 'nodeEnd',
+    dynamoUrl: 'dynamoUrl',
+    tableName: 'tableName',
+  }),
+}));
+
 describe('Availability history lambda index tests', () => {
   let eventMock: SQSEvent;
   let contextMock: Context;
