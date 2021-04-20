@@ -1,25 +1,25 @@
 interface Config {
   awsRegion: string,
   nodeEnv: string,
-  snsAvailabilityHistoryTopicName: string,
-  sqsAvailabilityHistoryQueueUrl: string
+  dynamoUrl: string,
+  tableName: string,
 }
 
 export const getConfig = (): Config => {
   [
-    'AWS_DEFAULT_REGION',
+    'REGION',
     'NODE_ENV',
-    'SNS_AVAILABILITY_HISTORY_TOPIC_NAME',
-    'SQS_AVAILABILITY_HISTORY_QUEUE_URL'
+    'DYNAMO_URL',
+    'TABLE_NAME',
   ].forEach((envVar) => {
     if (!process.env[`${envVar}`]) {
       throw new Error(`Environment variable ${envVar} seems to be missing.`);
     }
   });
   return {
-    awsRegion: process.env.AWS_DEFAULT_REGION,
+    awsRegion: process.env.REGION,
     nodeEnv: process.env.NODE_ENV,
-    snsAvailabilityHistoryTopicName: process.env.SNS_AVAILABILITY_HISTORY_TOPIC_NAME,
-    sqsAvailabilityHistoryQueueUrl: process.env.SQS_AVAILABILITY_HISTORY_QUEUE_URL
+    dynamoUrl: process.env.DYNAMO_URL,
+    tableName: process.env.TABLE_NAME,
   };
 };

@@ -10,6 +10,5 @@ module.exports = {
       lines: 75,
       statements: 75
     }
-  },
-  automock: true,
+  }
 };

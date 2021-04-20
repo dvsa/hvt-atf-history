@@ -46,6 +46,44 @@ sent to the lambda by editing the file `events/event.json`.
 1. `npm run build:prod`
 1.  Zip file can be found in `./dist/`
 
+## Running SQS Locally
+
+The lambda can be ran in isolation using `npm invoke` however if you want to run locally and have the lambda being invoked by a History SQS item (from triggering the Record Handler Lambda) follow these steps:
+
+- Publish the lambda to localstack:
+    - `cd .aws-sam/buildSQSHistoryFunction` then zip the files `zip -r ../SQSHistoryFunction.zip * `
+    - Make a template.json file to create the lambda - see example below `aws --endpoint-url=http://localhost:8000 lambda create-function --cli-input-json file://<path-to-file>/template.json --zip-file fileb:///<path-to-zip>/SQSHistoryFunction.zip`
+    - If it doesn't work, you can delete and try again `aws --endpoint-url=http://localhost:8000 lambda delete-function --function-name SQSHistoryFunction`
+- Check it's working by invoking the lambda with the event.json file
+    - `aws --endpoint-url=http://localhost:8000 lambda invoke --function-name SQSHistoryFunction --cli-binary-format raw-in-base64-out --payload file:///<path-to-file>/event.json`
+- Create the mapping between SQS and the lambda
+    - `aws --endpoint-url=http://localhost:8000 lambda create-event-source-mapping --function-name SQSHistoryFunction --batch-size 10 --event-source-arn arn:aws:sqs:eu-west-1:000000000000:hvt-availability-history-sqs`
+- To check it's worked, list the event source mappings
+    - `aws --endpoint-url=http://localhost:8000 lambda list-event-source-mappings --function-name SQSHistoryFunction --event-source-arn arn:aws:sqs:eu-west-1:000000000000:hvt-availability-history-sqs`
+- In the Record Handler repo, invoke the lambda to add items to the queue. The item should now appear in the history table
+
+ ### Example template.json
+
+ ```json
+{
+    "FunctionName": "SQSHistoryFunction",
+    "Runtime": "nodejs12.x",
+    "Handler": "app.handler",
+    "Description": "History Lambda",
+    "Timeout": 30,
+    "MemorySize": 500,
+    "Publish": true,
+    "Role": "",
+    "Environment": {
+        "Variables" :{
+            "NODE_ENV":"development",
+            "AWS_DEFAULT_REGION":"eu-west-1",
+            "DYNAMO_URL":"http://host.docker.internal:8000",
+            "TABLE_NAME":"AvailabilityHistory"
+        }
+    }
+}
+ ```
 
 ## Logging
 

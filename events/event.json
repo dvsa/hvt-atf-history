@@ -1,36 +1,16 @@
 {
-  "Records": [
-      {
-          "messageId": "059f36b4-87a3-44ab-83d2-661975830a7d",
-          "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
-          "body": "Test message.",
-          "attributes": {
-              "ApproximateReceiveCount": "1",
-              "SentTimestamp": "1545082649183",
-              "SenderId": "AIDAIENQZJOLO23YVJ4VO",
-              "ApproximateFirstReceiveTimestamp": "1545082649185"
-          },
-          "messageAttributes": {},
-          "md5OfBody": "e4e68fb7bd0e697a0ae8f1bb342846b3",
-          "eventSource": "aws:sqs",
-          "eventSourceARN": "arn:aws:sqs:eu-west-1:000000000000:hvt-availability-history-sqs",
-          "awsRegion": "eu-west-1"
-      },
-      {
-          "messageId": "2e1424d4-f796-459a-8184-9c92662be6da",
-          "receiptHandle": "AQEBzWwaftRI0KuVm4tP+/7q1rGgNqicHq...",
-          "body": "Test message.",
-          "attributes": {
-              "ApproximateReceiveCount": "1",
-              "SentTimestamp": "1545082650636",
-              "SenderId": "AIDAIENQZJOLO23YVJ4VO",
-              "ApproximateFirstReceiveTimestamp": "1545082650649"
-          },
-          "messageAttributes": {},
-          "md5OfBody": "e4e68fb7bd0e697a0ae8f1bb342846b3",
-          "eventSource": "aws:sqs",
-          "eventSourceARN": "arn:aws:sqs:eu-west-1:000000000000:hvt-availability-history-sqs",
-          "awsRegion": "eu-west-1"
-      }
-  ]
+    "Records": [
+        {
+            "messageId": "4f80239a-03c9-4fce-d68a-104001cbc5cb",
+            "receiptHandle": "gvjxhsgayqxjneypkfnbfyvnvoeajirwkwlgmoioigyqijuqaembinhjsrkpaxvyhpgrkkzfoadwmttnqmcexwougjbuhhikmkiuxnzeqhzkwtwfacjdmmlcwdtmgkhytlmapuodsxewfqfkfyabwypmwabrgneyzqdfzstnzdrsdhpfzygvtzbhh",
+            "mD5OfBody": "fb4823f6e5532530878d696331b20f3c",
+            "body": "{\"Type\": \"Notification\", \"MessageId\": \"b5c987c9-508b-416d-aff9-38fd81c4fb73\", \"Token\": null, \"TopicArn\": \"topicarn\", \"Message\": \"{\\\"id\\\":\\\"7db12eed-0c3f-4d27-8221-5699f4e3ea22\\\",\\\"name\\\":\\\"Test Cars Ltd.\\\",\\\"email\\\":\\\"hello@email.com\\\",\\\"availability\\\":{\\\"isAvailable\\\":false,\\\"lastUpdated\\\":\\\"2020-10-09T12:31:46.518Z\\\",\\\"endDate\\\":\\\"2020-11-03T14:21:45.000Z\\\",\\\"startDate\\\":\\\"2020-10-06T14:21:45.000Z\\\"},\\\"token\\\":\\\"eyJhbGciOiJIUzI1Ni\\\"}\", \"SubscribeURL\": null, \"Timestamp\": \"2021-03-25T11:41:45.511Z\", \"SignatureVersion\": \"1\", \"Signature\": \"EXAMPLEpH+..\", \"SigningCertURL\": \"https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem\", \"Subject\": \"New AvailabilityHistory message sent to SNS\"}",
+            "attributes": {
+                "SenderId": "AIDAIT2UOQQY3AUEKVGXU",
+                "SentTimestamp": "1616672505599",
+                "ApproximateReceiveCount": "1",
+                "ApproximateFirstReceiveTimestamp": "1616672530339"
+            }
+        }
+    ]
 }

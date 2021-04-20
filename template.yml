@@ -5,6 +5,7 @@ Resources:
   SQSHistoryFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
+      Timeout: 30
       CodeUri: src/handler/
       Handler: index.handler
       Runtime: nodejs12.x
